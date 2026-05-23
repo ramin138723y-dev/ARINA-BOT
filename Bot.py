@@ -11,9 +11,7 @@ users = set()
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    users.add(message.chat.id)
-
-    bot.send_message(message.chat.id, "❤️")
+    bot.send_message(message.chat.id, "test ❤️")
 
 def send_heart():
     for user_id in users:
