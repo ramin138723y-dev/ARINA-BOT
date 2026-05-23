@@ -1,12 +1,13 @@
 import telebot
-import threading
-import time
 import json
 import os
-import pytz
 from datetime import datetime
+import pytz
+import schedule
+import time
+import threading
 
-TOKEN = "8697245449:AAGtpJ9CQHPnXDwqQQai-c1aQO0DXr9cv_s"
+TOKEN = "توکن_بات"
 bot = telebot.TeleBot(TOKEN)
 
 FILE = "users.json"
@@ -29,28 +30,22 @@ def start(message):
     save_users()
     bot.send_message(message.chat.id, "❤️")
 
-def send_daily():
-    tehran = pytz.timezone("Asia/Tehran")
+def job():
+    for u in list(users):
+        try:
+            bot.send_message(u, "❤️")
+        except:
+            pass
 
-    sent_today = False
+# ساعت ایران
+schedule.every().day.at("00:00").do(job)
 
+def run_schedule():
     while True:
-        now = datetime.now(tehran).strftime("%H:%M")
-
-        if now == "00:00" and not sent_today:
-            for u in list(users):
-                try:
-                    bot.send_message(u, "❤️")
-                except:
-                    pass
-            sent_today = True
-
-        if now != "00:00":
-            sent_today = False
-
+        schedule.run_pending()
         time.sleep(1)
 
-threading.Thread(target=send_daily).start()
+threading.Thread(target=run_schedule).start()
 
-print("Bot is running...")
+print("Bot running...")
 bot.infinity_polling()
